@@ -4,7 +4,6 @@ package net.seensin.springdockerswarmmanagementapi.common.security.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.slf4j.Logger;
 import net.seensin.springdockerswarmmanagementapi.common.exception.validator.password.PasswordConstraintValidator;
-import net.seensin.springdockerswarmmanagementapi.common.security.config.common.jwt.JwtTokenUtil;
 import net.seensin.springdockerswarmmanagementapi.common.security.controller.to.UserRoleTo;
 import net.seensin.springdockerswarmmanagementapi.common.security.model.entity.User;
 import net.seensin.springdockerswarmmanagementapi.common.security.model.entity.common.view.View;
@@ -19,6 +18,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 @CrossOrigin(origins = "*")
 @RestController()
 @RequestMapping("/sina/users")
@@ -26,13 +26,8 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-
-
     @Autowired
     UserService userService;
-
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     PasswordConstraintValidator passwordConstraintValidator;
@@ -53,19 +48,18 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping()
     public ResponseEntity<User> update(@Valid @RequestBody User user) throws Exception {
-        if (passwordConstraintValidator.isValid(user.getPassword())) {
-            return ResponseEntity.ok(userService.update(user));
-        } else {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-
+        return ResponseEntity.ok(userService.update(user));
     }
 
     @JsonView(View.UserView.externalView.class)
     @PreAuthorize("hasAuthority('ADMIN')")
     @PatchMapping(value = "password")
     public ResponseEntity<User> changePassword(@Valid @RequestBody User user) throws Exception {
-        return ResponseEntity.ok(userService.changePassword(user));
+        if (passwordConstraintValidator.isValid(user.getPassword())) {
+            return ResponseEntity.ok(userService.update(user));
+        } else {
+            return ResponseEntity.ok(userService.changePassword(user));
+        }
     }
 
     @JsonView(View.UserView.externalView.class)
@@ -120,19 +114,6 @@ public class UserController {
     public ResponseEntity<List<User>> getAllDeActiveUsers() throws Exception {
         return ResponseEntity.ok(userService.getAllDeActiveUsers());
     }
-//
-//
-//    @PreAuthorize("hasAuthority('USER')")
-//    @PostMapping(value = "/logout")
-//    public ResponseEntity<?> logout(HttpServletRequest request) throws Exception {
-//
-//        String token = request.getHeader("Authorization").substring(7);
-//        System.out.println("revoking : \n "+token);
-//        jwtTokenUtil.revokeToken(token);
-//        Map map = new HashMap();
-//        map.put("message" , "token revoked..");
-//        map.put( "status", 200);
-//        return ResponseEntity.ok(map);
-//    }
+
 
 }

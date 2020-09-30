@@ -1,7 +1,6 @@
 package net.seensin.springdockerswarmmanagementapi.common.security.config;
 
 import net.seensin.springdockerswarmmanagementapi.common.security.config.common.jwt.JwtAuthenticationEntryPoint;
-//import net.seensin.springdockerswarmmanagementapi.common.security.config.common.jwt.JwtRequestFilter;
 import net.seensin.springdockerswarmmanagementapi.common.security.config.common.jwt.JwtRequestFilter;
 import net.seensin.springdockerswarmmanagementapi.common.security.model.entity.Role;
 import net.seensin.springdockerswarmmanagementapi.common.security.model.entity.User;
@@ -32,7 +31,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 import javax.annotation.PostConstruct;
 import java.util.*;
 

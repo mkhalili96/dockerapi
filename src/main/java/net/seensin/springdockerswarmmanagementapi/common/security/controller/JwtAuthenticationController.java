@@ -9,6 +9,7 @@ import net.seensin.springdockerswarmmanagementapi.common.security.config.common.
 import net.seensin.springdockerswarmmanagementapi.common.security.model.service.userdetailservice.SinaUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -17,8 +18,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.bind.annotation.*;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -45,6 +49,25 @@ public class JwtAuthenticationController {
             System.out.println("authentication failed");
             throw new Exception();
         }
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @PostMapping(value = "/expireSession")
+    public ResponseEntity logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Map map = new HashMap();
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                String cookieName = cookie.getName();
+                Cookie cookieToDelete = new Cookie(cookieName, null);
+                cookieToDelete.setMaxAge(0);
+                response.addCookie(cookieToDelete);
+            }
+            request.getSession().invalidate();
+            map.put("message", "user logged out successfully");
+            map.put("status", 200);
+            return ResponseEntity.ok(map);
+        } else
+            return (ResponseEntity) ResponseEntity.badRequest();
     }
 
     ////SERVICE///////////////////////////////////////////////////////////////////
