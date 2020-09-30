@@ -1,13 +1,21 @@
 package net.seensin.springdockerswarmmanagementapi.model.repository;
 
 import com.github.dockerjava.api.command.ListTasksCmd;
+import com.github.dockerjava.api.model.Service;
 import com.github.dockerjava.api.model.Task;
+import com.github.dockerjava.api.model.TaskState;
+import net.seensin.springdockerswarmmanagementapi.To.PreServiceMonitorTo;
+import net.seensin.springdockerswarmmanagementapi.To.PreTaskMonitorTo;
 import net.seensin.springdockerswarmmanagementapi.To.TaskSearchTo;
 import net.seensin.springdockerswarmmanagementapi.common.DockerConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
 public class SwarmTaskRepository {
@@ -32,7 +40,21 @@ public class SwarmTaskRepository {
 
         if (taskSearchTo.getDesired() != null)
             cmd = cmd.withStateFilter(taskSearchTo.getDesired());
-
         return cmd.exec();
+    }
+
+    public Set<PreTaskMonitorTo> findAllPreTasksByService(String serviceId){
+
+        Set<PreTaskMonitorTo> preTaskMonitorTos = new HashSet<>();
+
+        List<Task> tasks = connection.getDockerClient().listTasksCmd().withServiceFilter(serviceId).exec();
+        tasks.stream().forEach(task -> {
+            PreTaskMonitorTo preTaskMonitorTo
+                    = new PreTaskMonitorTo(task.getId(),task.getServiceId(),
+                    task.getNodeId(),task.getCreatedAt(),
+                    task.getUpdatedAt(),task.getStatus());
+            preTaskMonitorTos.add(preTaskMonitorTo);
+        });
+        return preTaskMonitorTos;
     }
 }

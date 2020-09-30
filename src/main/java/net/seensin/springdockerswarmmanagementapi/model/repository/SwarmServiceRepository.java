@@ -2,14 +2,21 @@ package net.seensin.springdockerswarmmanagementapi.model.repository;
 
 import com.github.dockerjava.api.command.CreateServiceResponse;
 import com.github.dockerjava.api.command.ListServicesCmd;
+import com.github.dockerjava.api.command.ListTasksCmd;
 import com.github.dockerjava.api.model.Service;
 import com.github.dockerjava.api.model.ServiceSpec;
+import com.github.dockerjava.api.model.Task;
+import com.github.dockerjava.api.model.TaskState;
+import net.seensin.springdockerswarmmanagementapi.To.PreServiceMonitorTo;
 import net.seensin.springdockerswarmmanagementapi.To.ServiceSearchTo;
 import net.seensin.springdockerswarmmanagementapi.common.DockerConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
 public class SwarmServiceRepository {
@@ -48,4 +55,30 @@ public class SwarmServiceRepository {
         connection.getDockerClient().removeServiceCmd(idOrName).exec();
         return idOrName;
     }
+
+    public Set<PreServiceMonitorTo> findAllPreServices(){
+
+        Set<PreServiceMonitorTo> preServiceMonitors = new HashSet<>();
+
+        List<Service> services = connection.getDockerClient().listServicesCmd().exec();
+        services.stream().forEach(service -> {
+            PreServiceMonitorTo preServiceMonitor
+                    = new PreServiceMonitorTo
+                           (service.getId(),service.getSpec().getName(),
+                           service.getSpec().getTaskTemplate().getContainerSpec().getImage(),
+                           service.getSpec().getMode().getReplicated().getReplicas(),
+                           service.getCreatedAt(),service.getUpdatedAt());
+
+            List<Task> totalTasks = connection.getDockerClient().listTasksCmd().withIdFilter(service.getId()).exec();
+            List<Task> runningTasks = totalTasks.stream().filter(task -> task.getStatus().getState().equals(TaskState.RUNNING)).collect(Collectors.toList());
+            preServiceMonitor.setTotalInstancesCount(totalTasks.size());
+            preServiceMonitor.setRunningInstancesCount(runningTasks.size());
+
+            preServiceMonitors.add(preServiceMonitor);
+        });
+
+        return preServiceMonitors;
+    }
+
+
 }

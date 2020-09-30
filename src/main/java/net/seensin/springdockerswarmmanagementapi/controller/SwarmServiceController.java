@@ -3,6 +3,7 @@ package net.seensin.springdockerswarmmanagementapi.controller;
 import com.github.dockerjava.api.command.CreateServiceResponse;
 import com.github.dockerjava.api.model.Service;
 import com.github.dockerjava.api.model.ServiceSpec;
+import net.seensin.springdockerswarmmanagementapi.To.PreServiceMonitorTo;
 import net.seensin.springdockerswarmmanagementapi.To.ReplicasTo;
 import net.seensin.springdockerswarmmanagementapi.To.ServiceSearchTo;
 import net.seensin.springdockerswarmmanagementapi.model.repository.SwarmServiceRepository;
@@ -11,6 +12,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/swarm/services")
@@ -25,6 +28,12 @@ public class SwarmServiceController {
         if (serviceSearchTo == null)
             serviceSearchTo = new ServiceSearchTo();
         return swarmServiceRepository.findAllServices(serviceSearchTo);
+    }
+
+    @GetMapping(value = "/preview")
+    @PreAuthorize("hasAuthority('MONITOR')")
+    public Set<PreServiceMonitorTo> preViewServices() {
+        return swarmServiceRepository.findAllPreServices();
     }
 
     @PostMapping
