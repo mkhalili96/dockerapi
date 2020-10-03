@@ -5,7 +5,7 @@ import com.github.dockerjava.api.model.SwarmNode;
 import com.github.dockerjava.api.model.SwarmNodeSpec;
 import net.seensin.springdockerswarmmanagementapi.To.LabelTo;
 import net.seensin.springdockerswarmmanagementapi.To.NodeSearchTo;
-import net.seensin.springdockerswarmmanagementapi.model.repository.SwarmNodeRepository;
+import net.seensin.springdockerswarmmanagementapi.model.service.SwarmNodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ import java.util.List;
 public class SwarmNodeController {
 
     @Autowired
-    SwarmNodeRepository nodeRepository;
+    SwarmNodeService nodeRepository;
 
     @GetMapping
     @PreAuthorize("hasAuthority('MONITOR')")

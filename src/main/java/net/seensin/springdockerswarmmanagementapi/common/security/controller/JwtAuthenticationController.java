@@ -8,6 +8,7 @@ import net.seensin.springdockerswarmmanagementapi.common.security.config.common.
 import net.seensin.springdockerswarmmanagementapi.common.security.config.common.jwt.JwtTokenUtil;
 import net.seensin.springdockerswarmmanagementapi.common.security.model.service.userdetailservice.SinaUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,15 +41,16 @@ public class JwtAuthenticationController {
     private SinaUserDetailsService userDetailsService;
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest, HttpServletRequest request , HttpServletResponse response) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest, HttpServletRequest request , HttpServletResponse response) throws Throwable {
         System.out.println("entry authenticate");
         if (response.getStatus() == 200){
             System.out.println("200 authenticate");
             final String token = tokenService(authenticationRequest,request);
+            addSameSiteCookieAttribute(response);
             return ResponseEntity.ok(new JwtResponse(token));
         }else {
             System.out.println("authentication failed");
-            throw new Exception();
+            throw (Throwable) ResponseEntity.badRequest();
         }
     }
 
@@ -114,6 +117,23 @@ public class JwtAuthenticationController {
 
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         return token;
+    }
+
+
+    private void addSameSiteCookieAttribute(HttpServletResponse response) {
+        Collection<String> headers = response.getHeaders(HttpHeaders.SET_COOKIE);
+        boolean firstHeader = true;
+        // there can be multiple Set-Cookie attributes
+        for (String header : headers) {
+            if (firstHeader) {
+                response.setHeader(HttpHeaders.SET_COOKIE,
+                        String.format("%s; %s", header, "SameSite=None; Secure"));
+                firstHeader = false;
+                continue;
+            }
+            response.addHeader(HttpHeaders.SET_COOKIE,
+                    String.format("%s; %s", header, "SameSite=None; Secure"));
+        }
     }
 
 }

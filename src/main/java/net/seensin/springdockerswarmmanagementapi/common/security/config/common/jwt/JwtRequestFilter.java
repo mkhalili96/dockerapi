@@ -32,7 +32,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws SignatureException {
         System.out.println("#######################NEW_REQUEST#######################");
-
         String requestUri = request.getRequestURI();
         System.out.println("["+request.getMethod()+"] "+requestUri);
 

@@ -60,6 +60,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
+
     @Autowired
     private RoleHierarchy roleHierarchy;
 
@@ -70,9 +71,6 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return roleHierarchy;
     }
 
-
-//    @Autowired
-//    BasicAuthenticationSuccessHandler successHandler;
 
     private SecurityExpressionHandler<FilterInvocation> webExpressionHandler() {
         DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler     = new DefaultWebSecurityExpressionHandler();

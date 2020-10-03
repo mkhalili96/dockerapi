@@ -1,24 +1,19 @@
-package net.seensin.springdockerswarmmanagementapi.model.repository;
+package net.seensin.springdockerswarmmanagementapi.model.service;
 
 import com.github.dockerjava.api.command.ListTasksCmd;
-import com.github.dockerjava.api.model.Service;
 import com.github.dockerjava.api.model.Task;
-import com.github.dockerjava.api.model.TaskState;
-import net.seensin.springdockerswarmmanagementapi.To.PreServiceMonitorTo;
 import net.seensin.springdockerswarmmanagementapi.To.PreTaskMonitorTo;
 import net.seensin.springdockerswarmmanagementapi.To.TaskSearchTo;
 import net.seensin.springdockerswarmmanagementapi.common.DockerConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Repository
-public class SwarmTaskRepository {
+public class SwarmTaskService {
 
     @Autowired
     DockerConnectionProvider connection;

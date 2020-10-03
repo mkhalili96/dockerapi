@@ -6,7 +6,7 @@ import com.github.dockerjava.api.model.ServiceSpec;
 import net.seensin.springdockerswarmmanagementapi.To.PreServiceMonitorTo;
 import net.seensin.springdockerswarmmanagementapi.To.ReplicasTo;
 import net.seensin.springdockerswarmmanagementapi.To.ServiceSearchTo;
-import net.seensin.springdockerswarmmanagementapi.model.repository.SwarmServiceRepository;
+import net.seensin.springdockerswarmmanagementapi.model.service.SwarmServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,38 +20,38 @@ import java.util.Set;
 public class SwarmServiceController {
 
     @Autowired
-    SwarmServiceRepository swarmServiceRepository;
+    SwarmServiceService swarmServiceService;
 
     @GetMapping
     @PreAuthorize("hasAuthority('MONITOR')")
     public List<Service> findAllServices(@RequestBody(required = false) ServiceSearchTo serviceSearchTo) {
         if (serviceSearchTo == null)
             serviceSearchTo = new ServiceSearchTo();
-        return swarmServiceRepository.findAllServices(serviceSearchTo);
+        return swarmServiceService.findAllServices(serviceSearchTo);
     }
 
     @GetMapping(value = "/preview")
     @PreAuthorize("hasAuthority('MONITOR')")
     public Set<PreServiceMonitorTo> preViewServices() {
-        return swarmServiceRepository.findAllPreServices();
+        return swarmServiceService.findAllPreServices();
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     public CreateServiceResponse createService(@RequestBody ServiceSpec serviceSpec) {
-        return swarmServiceRepository.createService(serviceSpec);
+        return swarmServiceService.createService(serviceSpec);
     }
 
     @PatchMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     public int replicas(@RequestBody ReplicasTo replicasTo) {
-        return swarmServiceRepository.replicas(replicasTo.getReplicas(), replicasTo.getId());
+        return swarmServiceService.replicas(replicasTo.getReplicas(), replicasTo.getId());
     }
 
     @DeleteMapping(path = "/{idOrName}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String deleteService(@PathVariable String idOrName) {
-        return swarmServiceRepository.deleteService(idOrName);
+        return swarmServiceService.deleteService(idOrName);
     }
 
 

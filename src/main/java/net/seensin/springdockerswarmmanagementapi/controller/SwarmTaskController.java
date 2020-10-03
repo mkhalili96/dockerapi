@@ -3,7 +3,7 @@ package net.seensin.springdockerswarmmanagementapi.controller;
 import com.github.dockerjava.api.model.Task;
 import net.seensin.springdockerswarmmanagementapi.To.PreTaskMonitorTo;
 import net.seensin.springdockerswarmmanagementapi.To.TaskSearchTo;
-import net.seensin.springdockerswarmmanagementapi.model.repository.SwarmTaskRepository;
+import net.seensin.springdockerswarmmanagementapi.model.service.SwarmTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ import java.util.Set;
 public class SwarmTaskController {
 
     @Autowired
-    SwarmTaskRepository taskRepository;
+    SwarmTaskService taskRepository;
 
     @GetMapping
     @PreAuthorize("hasAuthority('MONITOR')")

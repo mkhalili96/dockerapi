@@ -1,8 +1,7 @@
-package net.seensin.springdockerswarmmanagementapi.model.repository;
+package net.seensin.springdockerswarmmanagementapi.model.service;
 
 import com.github.dockerjava.api.command.CreateServiceResponse;
 import com.github.dockerjava.api.command.ListServicesCmd;
-import com.github.dockerjava.api.command.ListTasksCmd;
 import com.github.dockerjava.api.model.Service;
 import com.github.dockerjava.api.model.ServiceSpec;
 import com.github.dockerjava.api.model.Task;
@@ -19,7 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
-public class SwarmServiceRepository {
+public class SwarmServiceService {
 
     @Autowired
     DockerConnectionProvider connection;

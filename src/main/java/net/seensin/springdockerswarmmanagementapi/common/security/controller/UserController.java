@@ -1,6 +1,5 @@
 package net.seensin.springdockerswarmmanagementapi.common.security.controller;
 
-
 import com.fasterxml.jackson.annotation.JsonView;
 import org.slf4j.Logger;
 import net.seensin.springdockerswarmmanagementapi.common.exception.validator.password.PasswordConstraintValidator;
