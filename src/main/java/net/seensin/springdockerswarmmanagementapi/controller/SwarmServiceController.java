@@ -10,9 +10,7 @@ import net.seensin.springdockerswarmmanagementapi.model.service.SwarmServiceServ
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -53,6 +51,5 @@ public class SwarmServiceController {
     public String deleteService(@PathVariable String idOrName) {
         return swarmServiceService.deleteService(idOrName);
     }
-
 
 }

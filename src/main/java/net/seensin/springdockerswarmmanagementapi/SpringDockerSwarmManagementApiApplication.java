@@ -30,8 +30,4 @@ public class SpringDockerSwarmManagementApiApplication {
         SpringApplication.run(SpringDockerSwarmManagementApiApplication.class, args);
     }
 
-    @PostConstruct
-    public void doo(){
-        dockerRegistryService.pullImage();
-    }
 }

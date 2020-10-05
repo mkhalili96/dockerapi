@@ -1,6 +1,5 @@
 package net.seensin.springdockerswarmmanagementapi.common.security.controller;
 
-
 import net.seensin.springdockerswarmmanagementapi.common.exception.customExceptions.security.InvalidCredentialException;
 import net.seensin.springdockerswarmmanagementapi.common.exception.customExceptions.security.UserDisabledException;
 import net.seensin.springdockerswarmmanagementapi.common.security.config.common.jwt.JwtRequest;
@@ -26,7 +25,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @RestController
 @CrossOrigin
 public class JwtAuthenticationController {
@@ -41,7 +39,7 @@ public class JwtAuthenticationController {
     private SinaUserDetailsService userDetailsService;
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest, HttpServletRequest request , HttpServletResponse response) throws Throwable {
+    public ResponseEntity createAuthenticationToken(@RequestBody JwtRequest authenticationRequest, HttpServletRequest request , HttpServletResponse response) throws Throwable {
         System.out.println("entry authenticate");
         if (response.getStatus() == 200){
             System.out.println("200 authenticate");
@@ -50,7 +48,7 @@ public class JwtAuthenticationController {
             return ResponseEntity.ok(new JwtResponse(token));
         }else {
             System.out.println("authentication failed");
-            throw (Throwable) ResponseEntity.badRequest();
+            return (ResponseEntity) ResponseEntity.badRequest();
         }
     }
 
@@ -83,7 +81,6 @@ public class JwtAuthenticationController {
         } catch (BadCredentialsException e) {
             throw new InvalidCredentialException();
         }
-
     }
 
     public String tokenService(JwtRequest authenticationRequest, HttpServletRequest request) throws Exception {
