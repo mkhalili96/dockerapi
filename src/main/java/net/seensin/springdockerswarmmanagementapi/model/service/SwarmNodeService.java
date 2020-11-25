@@ -22,7 +22,6 @@ public class SwarmNodeService {
     DockerConnectionProvider connection;
 
     public List<SwarmNode> getAllNodes(NodeSearchTo nodeSearchTo) throws IOException {
-
         ListSwarmNodesCmd cmd = connection.getDockerClient().listSwarmNodesCmd();
         if (nodeSearchTo.getIdList() != null) {
             cmd = cmd.withIdFilter(nodeSearchTo.getIdList());
