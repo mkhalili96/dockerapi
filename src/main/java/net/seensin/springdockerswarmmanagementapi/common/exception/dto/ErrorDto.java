@@ -1,7 +1,6 @@
 package net.seensin.springdockerswarmmanagementapi.common.exception.dto;
 
 import lombok.Data;
-
 import java.io.Serializable;
 import java.util.Date;
 

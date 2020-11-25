@@ -4,6 +4,13 @@ import com.github.dockerjava.api.model.Image;
 import net.seensin.springdockerswarmmanagementapi.To.CloneTo;
 import net.seensin.springdockerswarmmanagementapi.To.ImageTo;
 import net.seensin.springdockerswarmmanagementapi.model.service.DockerRegistryService;
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -61,7 +69,7 @@ public class SwarmImageController {
         System.out.println("here");
         Map responseMap = new HashMap();
         service.deleteImage(imageName,force);
-        responseMap.put("message", "image built successfully");
+        responseMap.put("message", "image deleted successfully");
         responseMap.put("status", 200);
         return ResponseEntity.ok(responseMap);
     }
@@ -85,29 +93,29 @@ public class SwarmImageController {
         return convFile;
     }
 
-//    private static List<File> unTar(final InputStream inputFile) throws FileNotFoundException, IOException, ArchiveException {
-//
-//        final List<File> untaredFiles = new LinkedList<File>();
-//        final TarArchiveInputStream debInputStream = (TarArchiveInputStream) new ArchiveStreamFactory().createArchiveInputStream("tar", inputFile);
-//        TarArchiveEntry entry = null;
-//        while ((entry = (TarArchiveEntry)debInputStream.getNextEntry()) != null) {
-//            untaredFiles.add(entry.getFile());
-//        }
-//        debInputStream.close();
-//
-//        return untaredFiles;
-//    }
-//
-//    public String dockerTarValidatior(InputStream image) throws Exception {
-//        unTar(image).stream().forEach(file -> {
-//            System.out.println(file.getName());
-//        });
-//        File manifest = unTar(image).stream().filter(file -> file.getName().equals("manifest.json")).findFirst().orElseThrow(Exception::new);
-//        JSONParser parser = new JSONParser();
-//        System.out.println(image.toString());
-//        JSONArray array = (JSONArray) parser.parse(new FileReader(manifest));
-//        JSONObject object = (JSONObject) array.get(0);
-//        System.out.println(object.get("RepoTags").toString());
-//        return object.get("RepoTags").toString();
-//    }
+    private static List<File> unTar(final InputStream inputFile) throws FileNotFoundException, IOException, ArchiveException {
+
+        final List<File> untaredFiles = new LinkedList<File>();
+        final TarArchiveInputStream debInputStream = (TarArchiveInputStream) new ArchiveStreamFactory().createArchiveInputStream("tar", inputFile);
+        TarArchiveEntry entry = null;
+        while ((entry = (TarArchiveEntry)debInputStream.getNextEntry()) != null) {
+            untaredFiles.add(entry.getFile());
+        }
+        debInputStream.close();
+
+        return untaredFiles;
+    }
+
+    public String dockerTarValidatior(InputStream image) throws Exception {
+        unTar(image).stream().forEach(file -> {
+            System.out.println(file.getName());
+        });
+        File manifest = unTar(image).stream().filter(file -> file.getName().equals("manifest.json")).findFirst().orElseThrow(Exception::new);
+        JSONParser parser = new JSONParser();
+        System.out.println(image.toString());
+        JSONArray array = (JSONArray) parser.parse(new FileReader(manifest));
+        JSONObject object = (JSONObject) array.get(0);
+        System.out.println(object.get("RepoTags").toString());
+        return object.get("RepoTags").toString();
+    }
 }

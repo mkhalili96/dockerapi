@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DockerRegistryService {
@@ -19,8 +21,13 @@ public class DockerRegistryService {
     @Autowired
     DockerConnectionProvider connection;
 
-    public void importTarImageFile(InputStream image) throws Exception {
+    public List<String> importTarImageFile(InputStream image) throws Exception {
+        List<String> imagesSumm = new ArrayList<>();
         connection.getDockerClient().loadImageCmd(image).exec();
+        return findAllImages(new ImageTo())
+                .stream()
+                .map(img -> img.getId()+" : "+img.getRepoTags())
+                .collect(Collectors.toList());
     }
 
     public String importImageByDockerFile(File dockerFile , String tag) throws Exception{
