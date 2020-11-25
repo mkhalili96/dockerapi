@@ -65,6 +65,7 @@ public class SwarmServiceService {
                     = new PreServiceMonitorTo
                            (service.getId(),service.getSpec().getName(),
                            service.getSpec().getTaskTemplate().getContainerSpec().getImage(),
+                           //todo Docker service on Global mode returns NullPointerException on this line
                            service.getSpec().getMode().getReplicated().getReplicas(),
                            service.getCreatedAt(),service.getUpdatedAt());
 

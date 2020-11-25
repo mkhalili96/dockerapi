@@ -73,7 +73,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     private SecurityExpressionHandler<FilterInvocation> webExpressionHandler() {
-        DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler     = new DefaultWebSecurityExpressionHandler();
+        DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler = new DefaultWebSecurityExpressionHandler();
         defaultWebSecurityExpressionHandler.setRoleHierarchy(roleHierarchy);
         return defaultWebSecurityExpressionHandler;
     }
@@ -98,7 +98,6 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         configuration.setAllowedMethods(all);
         configuration.setAllowedHeaders(all);
         configuration.setAllowCredentials(true);
-
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
@@ -134,7 +133,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // make sure we use stateless session; session won't be used to
                 // store user's state.
                         exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and().httpBasic();
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
 
 //         Add a filter to validate the tokens with every request
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

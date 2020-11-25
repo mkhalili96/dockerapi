@@ -224,7 +224,6 @@ public class User implements Serializable {
         this.userTempRolesSet = userTempRolesSet;
     }
 
-    // todo delete P@$$W0rld and use dto
     @PrePersist
     public void prePersist() {
         if (this.password.length() <= 55) {
@@ -232,7 +231,6 @@ public class User implements Serializable {
         }
     }
 
-    // todo delete P@$$W0rld and use dto
     @PreUpdate
     public void preUpdate() {
         if (this.password.length() <= 55) {

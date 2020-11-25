@@ -17,7 +17,7 @@ public class DockerConnectionProvider {
 //            .withDockerCertPath("/home/baeldung/.docker/certs")
 //            .withDockerConfig("/home/baeldung/.docker/")
 //            .withDockerTlsVerify("1")
-            .withDockerHost("tcp://192.168.3.37:2375").build();
+            .withDockerHost("tcp://192.168.3.31:2375").build();
 
     private DockerClient dockerClient = DockerClientBuilder.getInstance(config).build();
 
