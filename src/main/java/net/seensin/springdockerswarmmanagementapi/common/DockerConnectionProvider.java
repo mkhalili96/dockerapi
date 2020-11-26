@@ -5,34 +5,55 @@ import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.transport.DockerHttpClient;
 import net.seensin.springdockerswarmmanagementapi.common.httpclient5.ApacheDockerHttpClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import javax.annotation.PostConstruct;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configuration
 public class DockerConnectionProvider {
-    private DefaultDockerClientConfig config
-            = DefaultDockerClientConfig.createDefaultConfigBuilder()
-//            .withRegistryEmail("info@baeldung.com")
-//            .withRegistryPassword("baeldung")
-//            .withRegistryUsername("baeldung")
-//            .withDockerCertPath("/home/baeldung/.docker/certs")
-//            .withDockerConfig("/home/baeldung/.docker/")
-//            .withDockerTlsVerify("1")
-            .withDockerHost("tcp://192.168.3.31:2375").build();
+    @Value("${host.manager.list}")
+    private List<String> list;
 
-    private DockerClient dockerClient = DockerClientBuilder.getInstance(config).build();
+    private Map<String, DockerClient> dockerClientMap   = new HashMap();
+    private Map<String, DockerHttpClient> httpClientMap = new HashMap();
 
+    @PostConstruct
+    private void init(){
+        for (String ip : list) {
+            try {
+                DefaultDockerClientConfig config
+                        = DefaultDockerClientConfig.createDefaultConfigBuilder()
+                        .withDockerHost("tcp://"+ip+":2375").build();
+
+                dockerClientMap.put(ip,DockerClientBuilder.getInstance(config).build());
+                DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
+                        .dockerHost(config.getDockerHost())
+                        .build();
+                httpClientMap.put(ip,httpClient);
+
+            }catch (Exception e){
+                System.out.println(ip + " not valid "+e.getClass().getName());
+            }
+        }
+    }
 
     public DockerClient getDockerClient() {
-        return dockerClient;
+        return dockerClientMap.get(list.get(0));
     }
 
     public DockerHttpClient getDockerHttpclient() {
-        DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
-                .dockerHost(config.getDockerHost())
-                .build();
-        return httpClient;
+        return httpClientMap.get(list.get(0));
     }
 
+    public DockerClient getDockerClientByIp(String ip) {
+        return dockerClientMap.get(ip);
+    }
 
+    public DockerHttpClient getDockerHttpclientByIp(String ip) {
+        return httpClientMap.get(ip);
+    }
 }
 

@@ -21,17 +21,17 @@ public class DockerRegistryService {
     @Autowired
     DockerConnectionProvider connection;
 
-    public List<String> importTarImageFile(InputStream image) throws Exception {
+    public List<String> importTarImageFile(InputStream image , String host) throws Exception {
         List<String> imagesSumm = new ArrayList<>();
-        connection.getDockerClient().loadImageCmd(image).exec();
-        return findAllImages(new ImageTo())
+        connection.getDockerClientByIp(host).loadImageCmd(image).exec();
+        return findAllImages(new ImageTo(),host)
                 .stream()
                 .map(img -> img.getId()+" : "+img.getRepoTags())
                 .collect(Collectors.toList());
     }
 
-    public String importImageByDockerFile(File dockerFile , String tag) throws Exception{
-        return connection.getDockerClient().buildImageCmd()
+    public String importImageByDockerFile(File dockerFile , String tag , String host) throws Exception{
+        return connection.getDockerClientByIp(host).buildImageCmd()
                 .withDockerfile(dockerFile)
                 .withPull(true)
                 .withNoCache(true)
@@ -39,16 +39,16 @@ public class DockerRegistryService {
                 .exec(new BuildImageResultCallback()).awaitImageId();
     }
 
-    public void cloneImage(CloneTo clone){
-        connection.getDockerClient().tagImageCmd(clone.getImageName(),clone.getNewNmae(),clone.getTag()).exec();
+    public void cloneImage(CloneTo clone , String host){
+        connection.getDockerClientByIp(host).tagImageCmd(clone.getImageName(),clone.getNewNmae(),clone.getTag()).exec();
     }
 
-    public void deleteImage(String imageName , Boolean force){
-        connection.getDockerClient().removeImageCmd(imageName).withForce(force).exec();
+    public void deleteImage(String imageName , Boolean force , String host){
+        connection.getDockerClientByIp(host).removeImageCmd(imageName).withForce(force).exec();
     }
 
-    public List<Image> findAllImages(ImageTo image){
-        ListImagesCmd cmd = connection.getDockerClient().listImagesCmd();
+    public List<Image> findAllImages(ImageTo image , String host){
+        ListImagesCmd cmd = connection.getDockerClientByIp(host).listImagesCmd();
 
         if (image.getImageNmae() != null)
             cmd = cmd.withImageNameFilter(image.getImageNmae());
