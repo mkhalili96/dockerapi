@@ -50,4 +50,10 @@ public class SwarmNodeController {
         return nodeRepository.updateNode(id, version, nodeSpec);
     }
 
+    @PostMapping(path = "/managers")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<String> getAllManagerNodesIp() {
+        return nodeRepository.getAllManagerNodesIp();
+    }
+
 }

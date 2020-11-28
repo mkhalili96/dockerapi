@@ -40,6 +40,9 @@ public class DockerConnectionProvider {
         }
     }
 
+    public List<String> getAllManagerNodesIp(){
+        return list;
+    }
     public DockerClient getDockerClient() {
         return dockerClientMap.get(list.get(0));
     }

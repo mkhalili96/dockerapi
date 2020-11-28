@@ -76,5 +76,9 @@ public class SwarmNodeService {
         return id;
     }
 
+        public List<String> getAllManagerNodesIp(){
+        return connection.getAllManagerNodesIp();
+    }
+
 
 }
