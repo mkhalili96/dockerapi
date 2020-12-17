@@ -10,7 +10,8 @@ import java.util.List;
 public class ServiceTranslator {
     public ServiceSpec Translate(ServiceTo service){
         List<NetworkAttachmentConfig> networks = new ArrayList<>();
-        service.getNetworks().stream().forEach(network -> networks.add(new NetworkAttachmentConfig().withTarget(network)));
+        if (service.getNetworks() != null)
+            service.getNetworks().stream().forEach(network -> networks.add(new NetworkAttachmentConfig().withTarget(network)));
 
         ServiceSpec spec = new ServiceSpec();
         spec.withName(service.getName());

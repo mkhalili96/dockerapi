@@ -16,6 +16,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -70,7 +71,7 @@ public class ImageController {
         return ResponseEntity.ok(responseMap);
     }
 
-    @GetMapping()
+    @PostMapping()
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<Image>> findImages(@RequestBody(required = false) ImageTo image,@RequestParam String host) throws Exception {
         if (image == null)
@@ -89,7 +90,7 @@ public class ImageController {
         return convFile;
     }
 
-    public Boolean dockerTarValidatior(InputStream image) throws Exception {
+    private Boolean dockerTarValidatior(InputStream image) throws Exception {
         Boolean manifest = false , repositories = false;
 
         try (TarArchiveInputStream fin = new TarArchiveInputStream(image)){
@@ -110,7 +111,5 @@ public class ImageController {
 
         return (repositories & manifest);
     }
-
-
 
 }

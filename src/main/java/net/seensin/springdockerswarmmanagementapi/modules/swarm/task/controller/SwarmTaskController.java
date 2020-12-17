@@ -19,7 +19,7 @@ public class SwarmTaskController {
     @Autowired
     SwarmTaskService taskRepository;
 
-    @GetMapping
+    @PostMapping
     @PreAuthorize("hasAuthority('MONITOR')")
     public List<Task> findAllTasks(@RequestBody TaskSearchTo taskSearchTo) {
         if (taskSearchTo == null)

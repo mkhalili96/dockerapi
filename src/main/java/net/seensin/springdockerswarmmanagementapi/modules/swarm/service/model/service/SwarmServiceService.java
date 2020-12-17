@@ -129,23 +129,30 @@ public class SwarmServiceService {
             detailServiceMonitor.setRunningInstancesCount(runningTasks.size());
 
             detailServiceMonitor.setImage(service.getSpec().getTaskTemplate().getContainerSpec().getImage());
-            detailServiceMonitor.setConstraints(service
-                    .getSpec()
-                    .getTaskTemplate()
-                    .getPlacement()
-                    .getConstraints()
+            List<String> constraints = service
+                                        .getSpec()
+                                        .getTaskTemplate()
+                                        .getPlacement()
+                                        .getConstraints();
+            if (constraints != null){
+                detailServiceMonitor.setConstraints(constraints
                         .stream().map(constraint ->
-                            constraint
-                                    .replace("node.labels.","")
-                                    .replace("==",":"))
-                    .collect(Collectors.toSet()));
-            detailServiceMonitor.setLabels(service.getSpec().getLabels());
-            detailServiceMonitor
-                    .setNetworks(service.getSpec()
-                            .getNetworks()
-                            .stream()
-                            .map(network -> network.getTarget())
-                            .collect(Collectors.toList()));
+                        constraint
+                                .replace("node.labels.","")
+                                .replace("==",":"))
+                        .collect(Collectors.toSet()));
+                detailServiceMonitor.setLabels(service.getSpec().getLabels());
+            }
+
+
+            if (service.getSpec().getNetworks() != null){
+                detailServiceMonitor
+                        .setNetworks(service.getSpec()
+                                .getNetworks()
+                                .stream()
+                                .map(network -> connection.getDockerClient().inspectNetworkCmd().withNetworkId(network.getTarget()).exec().getName()).collect(Collectors.toList()));
+            }
+
             detailServiceMonitor.setPorts(service.getSpec().getEndpointSpec().getPorts());
             detailServiceMonitorTos.add(detailServiceMonitor);
         });

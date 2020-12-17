@@ -18,7 +18,7 @@ public class SwarmServiceController {
     @Autowired
     SwarmServiceService swarmServiceService;
 
-    @GetMapping
+    @PostMapping(value = "inspect")
     @PreAuthorize("hasAuthority('MONITOR')")
     public List<Service> findAllServices(@RequestBody(required = false) ServiceSearchTo serviceSearchTo) {
         if (serviceSearchTo == null)
@@ -26,7 +26,7 @@ public class SwarmServiceController {
         return swarmServiceService.findAllServices(serviceSearchTo);
     }
 
-    @GetMapping(value = "/preview")
+    @PostMapping(value = "/preview")
     @PreAuthorize("hasAuthority('MONITOR')")
     public Set<PreServiceMonitorTo> preViewServices(@RequestBody(required = false) ServiceSearchTo serviceSearchTo) {
         if (serviceSearchTo == null)
@@ -34,7 +34,7 @@ public class SwarmServiceController {
         return swarmServiceService.findAllPreServices(serviceSearchTo);
     }
 
-    @GetMapping(value = "/detail")
+    @PostMapping(value = "/detail")
     @PreAuthorize("hasAuthority('MONITOR')")
     public Set<DetailServiceMonitorTo> detailServices(@RequestBody(required = false) ServiceSearchTo serviceSearchTo) {
         if (serviceSearchTo == null)

@@ -20,7 +20,7 @@ public class SwarmNodeController {
     @Autowired
     SwarmNodeService nodeRepository;
 
-    @GetMapping
+    @PostMapping
     @PreAuthorize("hasAuthority('MONITOR')")
     public List<SwarmNode> getAllNodes(@RequestBody(required = false) NodeSearchTo nodeSearchTo) throws IOException {
         if (nodeSearchTo == null)
@@ -28,7 +28,7 @@ public class SwarmNodeController {
         return nodeRepository.getAllNodes(nodeSearchTo);
     }
 
-    @GetMapping(path = "/label")
+    @PostMapping(path = "/label")
     @PreAuthorize("hasAuthority('MONITOR')")
     public List<SwarmNode> getAllNodesByLabelKeyValue(@RequestBody LabelTo labelTo) throws IOException {
         if (labelTo.getValue() != null)
@@ -50,7 +50,7 @@ public class SwarmNodeController {
         return nodeRepository.updateNode(id, version, nodeSpec);
     }
 
-    @PostMapping(path = "/managers")
+    @PostMapping(path = "/hosts")
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<String> getAllManagerNodesIp() {
         return nodeRepository.getAllManagerNodesIp();

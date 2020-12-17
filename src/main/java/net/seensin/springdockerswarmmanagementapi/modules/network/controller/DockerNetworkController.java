@@ -31,4 +31,11 @@ public class DockerNetworkController {
         return ResponseEntity.ok(service.getOverlayNetworks());
     }
 
+    @GetMapping(value = "/name")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<List<String>> getAllNetworkNames() throws Exception {
+        return ResponseEntity.ok(service.getOverlayNetworkNames());
+    }
+
+
 }

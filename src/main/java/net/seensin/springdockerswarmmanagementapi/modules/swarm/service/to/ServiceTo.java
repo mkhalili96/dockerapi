@@ -83,8 +83,10 @@ public class ServiceTo implements Serializable {
 
     public List<String> getLabelConstraint() {
         List<String> temp = new ArrayList<>();
-        for (String key : this.constraints.keySet()) {
-            temp.add("node.labels."+key+"=="+this.constraints.get(key));
+        if (this.constraints != null){
+            for (String key : this.constraints.keySet()) {
+                temp.add("node.labels."+key+"=="+this.constraints.get(key));
+            }
         }
         return temp;
     }

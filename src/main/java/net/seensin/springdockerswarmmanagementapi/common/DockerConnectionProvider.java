@@ -8,21 +8,21 @@ import net.seensin.springdockerswarmmanagementapi.common.httpclient5.ApacheDocke
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Configuration
 public class DockerConnectionProvider {
     @Value("${host.manager.list}")
-    private List<String> list;
+    private List<String> hosts;
+
 
     private Map<String, DockerClient> dockerClientMap   = new HashMap();
     private Map<String, DockerHttpClient> httpClientMap = new HashMap();
 
     @PostConstruct
     private void init(){
-        for (String ip : list) {
+
+        for (String ip : hosts) {
             try {
                 DefaultDockerClientConfig config
                         = DefaultDockerClientConfig.createDefaultConfigBuilder()
@@ -40,15 +40,16 @@ public class DockerConnectionProvider {
         }
     }
 
-    public List<String> getAllManagerNodesIp(){
-        return list;
+    public List<String> getAllNodesIp(){
+        return hosts;
     }
+
     public DockerClient getDockerClient() {
-        return dockerClientMap.get(list.get(0));
+        return dockerClientMap.get(hosts.get(0));
     }
 
     public DockerHttpClient getDockerHttpclient() {
-        return httpClientMap.get(list.get(0));
+        return httpClientMap.get(hosts.get(0));
     }
 
     public DockerClient getDockerClientByIp(String ip) {
