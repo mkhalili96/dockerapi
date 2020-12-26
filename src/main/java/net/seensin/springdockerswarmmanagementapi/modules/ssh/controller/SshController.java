@@ -1,6 +1,8 @@
 package net.seensin.springdockerswarmmanagementapi.modules.ssh.controller;
 
 import com.jcraft.jsch.JSchException;
+import net.seensin.springdockerswarmmanagementapi.common.exception.customExceptions.CantSetCardException;
+import net.seensin.springdockerswarmmanagementapi.common.exception.customExceptions.SshProblemException;
 import net.seensin.springdockerswarmmanagementapi.modules.ssh.model.service.SshClient;
 import net.seensin.springdockerswarmmanagementapi.modules.ssh.to.NodeNetworkCommandTo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ public class SshController {
 
     @PostMapping(value = "/node-network")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Map> configNodeNetwork(@RequestBody NodeNetworkCommandTo command) throws JSchException {
+    public ResponseEntity<Map> configNodeNetwork(@RequestBody NodeNetworkCommandTo command) throws JSchException, SshProblemException, CantSetCardException {
         Map map = new HashMap();
         map.put("response",service.nodeNetworkAccessProvider(command));
         return ResponseEntity.ok(map);

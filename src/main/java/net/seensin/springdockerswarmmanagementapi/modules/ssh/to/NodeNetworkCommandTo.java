@@ -11,4 +11,5 @@ public class NodeNetworkCommandTo {
     String password ;
     List<Integer> nodeIdList;
     String gateWay;
+    SimpleTask task;
 }
