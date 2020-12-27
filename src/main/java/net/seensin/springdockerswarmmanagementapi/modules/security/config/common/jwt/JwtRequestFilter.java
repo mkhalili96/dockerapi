@@ -13,9 +13,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.regex.Pattern;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -34,16 +36,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         System.out.println("#######################NEW_REQUEST#######################");
         String requestUri = request.getRequestURI();
         System.out.println("["+request.getMethod()+"] "+requestUri);
-
-        if (!requestUri.equals("/authenticate")) {
-            nonAuthenticateRequestFilter(request,response,chain);
-        } else {
+        boolean bool = Pattern.matches("/.*\\.js|/.*\\.css|/.*\\.js.map|/.*\\.html|/login|/home/.*|/|/favicon.ico", requestUri);
+        if (requestUri.equals("/authenticate")) {
             if (SecurityContextHolder.getContext().getAuthentication() != null)
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "User Already Logged In");
-
-
             chain.doFilter(request, response);
+        } else if (bool)
+            chain.doFilter(request, response);
+        else {
+            nonAuthenticateRequestFilter(request, response, chain);
         }
+
+
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class QueryTo {
 
-    private String query = "";
+    private String query;
 }

@@ -15,7 +15,9 @@ public class MongoLogReaderService {
     MongoTemplate template;
 
    public List LogReader(Query query , Class clazz){
+
        return template.find(query,clazz);
+
    }
 
 }

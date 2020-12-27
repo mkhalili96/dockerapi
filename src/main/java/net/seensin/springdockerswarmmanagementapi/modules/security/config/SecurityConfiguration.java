@@ -31,6 +31,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import javax.annotation.PostConstruct;
 import java.util.*;
 
@@ -94,7 +95,8 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         CorsConfiguration configuration = new CorsConfiguration();
         List<String> all = Collections.singletonList("*");
-        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:4200"));
+//        configuration.setAllowedOrigins(all);
+        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:4200","https://192.168.3.41:8080"));
         configuration.setAllowedMethods(all);
         configuration.setAllowedHeaders(all);
         configuration.setAllowCredentials(true);
@@ -127,12 +129,14 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         // We don't need CSRF for this example
         httpSecurity.csrf().disable().cors().and()
                 // dont authenticate this particular request
-                .authorizeRequests().antMatchers("/authenticate").permitAll().
+                .authorizeRequests().antMatchers("/authenticate" , "/*.js" ,"/*.css","/*.favicon.ico","/login" , "/" ,"/index.html","/home/**").permitAll()
+//                .antMatchers("/", "/public/**", "/resources/**", "/resources/public/**").permitAll()
                 // all other requests need to be authenticated
-                        anyRequest().authenticated().and().
+                .anyRequest().authenticated()
                 // make sure we use stateless session; session won't be used to
                 // store user's state.
-                        exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
+
+        .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
 
 //         Add a filter to validate the tokens with every request

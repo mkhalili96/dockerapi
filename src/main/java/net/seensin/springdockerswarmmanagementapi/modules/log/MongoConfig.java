@@ -4,6 +4,7 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -12,10 +13,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 public class MongoConfig {
 
 
+    @Value("${mongo.host}")
+    String mongoHost;
 
     @Bean
     public MongoClient mongo() {
-        ConnectionString connectionString = new ConnectionString("mongodb://192.168.3.37:27017/SINA_LOG_DB");
+        ConnectionString connectionString = new ConnectionString("mongodb://"+mongoHost+":27017/SINA_LOG_DB");
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .build();
